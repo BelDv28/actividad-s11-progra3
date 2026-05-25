@@ -113,7 +113,7 @@ public class MainGUI extends JFrame {
         tabbedPane.setFont(FONT_LABEL);
         tabbedPane.setBorder(new EmptyBorder(14, 0, 0, 0));
         tabbedPane.addTab("Decodificador", buildSingleTab());
-        tabbedPane.addTab("Visualizador", buildTreeTab());
+        tabbedPane.addTab("Árbol", buildTreeTab());
         tabbedPane.addTab("Lote",          buildBatchTab());
         tabbedPane.addTab("Historial",     buildHistoryTab());
         return tabbedPane;
