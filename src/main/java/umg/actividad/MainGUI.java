@@ -35,6 +35,7 @@ public class MainGUI extends JFrame {
     private DefaultTableModel tableModel;
     private DefaultTableModel historyModel;
     private JTabbedPane       tabbedPane;
+    private TreePanel treePanel;
 
     private final ArbolDecoder decoder = new ArbolDecoder();
 
@@ -112,6 +113,7 @@ public class MainGUI extends JFrame {
         tabbedPane.setFont(FONT_LABEL);
         tabbedPane.setBorder(new EmptyBorder(14, 0, 0, 0));
         tabbedPane.addTab("Decodificador", buildSingleTab());
+        tabbedPane.addTab("Visualizador", buildTreeTab());
         tabbedPane.addTab("Lote",          buildBatchTab());
         tabbedPane.addTab("Historial",     buildHistoryTab());
         return tabbedPane;
@@ -315,6 +317,7 @@ public class MainGUI extends JFrame {
                     BorderFactory.createLineBorder(ACCENT, 1),
                     new EmptyBorder(14, 16, 14, 16)));
             historyModel.insertRow(0, new Object[]{raw, result, "OK"});
+            treePanel.setTree(raw, decoder);
         } catch (Exception ex) {
             resultLabel.setFont(new Font("Segoe UI", Font.ITALIC, 14));
             resultLabel.setForeground(ERROR_COLOR);
@@ -332,6 +335,7 @@ public class MainGUI extends JFrame {
         resultLabel.setText("—");
         resultLabel.setFont(FONT_RESULT);
         resultLabel.setForeground(new Color(60, 60, 60));
+        treePanel.clear();
         statusLabel.setText("Ingresa un mensaje y presiona Decodificar");
         resultPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(BORDER_COLOR, 1),
@@ -354,7 +358,7 @@ public class MainGUI extends JFrame {
                 historyModel.insertRow(0, new Object[]{l, ex.getMessage(), "ERR"});
             }
         }
-        tabbedPane.setSelectedIndex(1);
+        tabbedPane.setSelectedIndex(2);
     }
 
     // HELPERS
@@ -479,6 +483,25 @@ public class MainGUI extends JFrame {
             if (++idx[0] >= seq.length) { comp.setLocation(orig); timer.stop(); }
         });
         timer.start();
+    }
+    private JPanel buildTreeTab() {
+        JPanel p = new JPanel(new BorderLayout(0, 12));
+        p.setBackground(BG_DARK);
+        p.setBorder(new EmptyBorder(20, 0, 0, 0));
+
+        JPanel topCard = makeCard();
+        topCard.setLayout(new BorderLayout(0, 10));
+        topCard.add(makeLabel("El árbol se actualiza automáticamente al decodificar. (Funciona solo para 1 palabra a la vez)"), BorderLayout.NORTH);
+
+        treePanel = new TreePanel();
+
+        JScrollPane scroll = new JScrollPane(treePanel);
+        scroll.setBorder(BorderFactory.createLineBorder(BORDER_COLOR));
+        scroll.getViewport().setBackground(new Color(26, 26, 26));
+
+        p.add(topCard, BorderLayout.NORTH);
+        p.add(scroll,  BorderLayout.CENTER);
+        return p;
     }
 
     // MAIN
